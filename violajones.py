@@ -1,42 +1,23 @@
+# https://www.youtube.com/watch?v=uEJ71VlUmMQ&ab_channel=Computerphile
+# Also used ChatGPT to help compute the integral image
+
 import cv2
 import numpy as np
 
-# Load the image
-image = cv2.imread("shapes2.png") 
-#image = cv2.resize(image, (500, 500))
+# This function computes the integral image
+def calculateIntegralImage(image):
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    #print('Gray image: ', gray_image)
+    gray_image = np.array(gray_image)
+    cumsum_rows = np.cumsum(gray_image, axis=0)
+    cumsum_cols = np.cumsum(cumsum_rows, axis=1)  
+    #print('Cum Sum image: ', cumsum_cols)
+    return cumsum_cols
 
-# Setup SimpleBlobDetector parameters.
-params = cv2.SimpleBlobDetector_Params()
+# This function loops through all the features of the image and finds the Haar Features
+# For this project, only the rectangular Haar Featurs will be detected instead of tilted.
+# https://en.wikipedia.org/wiki/Haar-like_feature
+# https://www.youtube.com/watch?v=ZSqg-fZJ9tQ&ab_channel=FirstPrinciplesofComputerVision
 
-# Change thresholds
-params.minThreshold = 10
-params.maxThreshold = 200
-
-# Filter by Area.
-params.filterByArea = True
-params.minArea = 100
-
-# Filter by Circularity
-params.filterByCircularity = False
-
-# Filter by Convexity
-params.filterByConvexity = False
-
-# Filter by Inertia
-params.filterByInertia = False
-
-# Create a detector with the parameters
-detector = cv2.SimpleBlobDetector_create(params)
-
-# Detect blobs
-keypoints = detector.detect(image)
-
-# Draw detected blobs as red circles
-blank = np.zeros((1, 1))
-blobs = cv2.drawKeypoints(image, keypoints, blank, (0, 0, 255),
-                                      cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-
-# Display the detected blobs
-cv2.imshow("Blobs", blobs)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+def computeHaarFeatures(integralImage, features):
+    print(features)
