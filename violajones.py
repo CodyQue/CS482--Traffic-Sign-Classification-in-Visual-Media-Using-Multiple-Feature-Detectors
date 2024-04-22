@@ -20,4 +20,15 @@ def calculateIntegralImage(image):
 # https://www.youtube.com/watch?v=ZSqg-fZJ9tQ&ab_channel=FirstPrinciplesofComputerVision
 
 def computeHaarFeatures(integralImage, features):
-    print(features)
+    print('Length: ', features.shape)
+    rowCount = integralImage.shape[0]
+    first_half = integralImage[:rowCount//2]
+    second_half = integralImage[rowCount//2:]
+    print('First Half: ', first_half)
+    print('Second Half: ', second_half)
+    print(second_half[-1, -1] - first_half[-1, -1])
+    for i in features:
+        #print(i)
+        x = i[0]
+        y = i[1]
+        #print(integralImage[x][y])
