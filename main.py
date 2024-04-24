@@ -2,7 +2,26 @@ import violajones
 import featureselector
 import cv2
 import numpy as np
-  
+
+def derivative(image):
+    # Read the image
+
+    # Apply Sobel filter for x-direction derivative
+    sobel_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+
+    # Apply Sobel filter for y-direction derivative
+    sobel_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
+
+    # Convert back to uint8
+    sobel_x = cv2.convertScaleAbs(sobel_x)
+    sobel_y = cv2.convertScaleAbs(sobel_y)
+
+    # Display the results
+    cv2.imshow('Sobel X', sobel_x)
+    cv2.imshow('Sobel Y', sobel_y)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
 def canny_edge_detection(frame): 
     # Convert the frame to grayscale for edge detection 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
@@ -23,7 +42,9 @@ def displayImage(image):
 # Main function that imports image and selects features from image
 def main():
     image = cv2.imread("yieldsigns/yield.jfif") 
+    #image = cv2.imread("stopsigns/stopsign.jfif") 
     #image = cv2.imread("stopsigns/stopsign3.jpg") 
+    #image = cv2.imread("yieldsigns/yield3.jpg") 
     image = cv2.resize(image, (400, 400))
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     #print(gray_image)
@@ -33,7 +54,9 @@ def main():
     #print(features)
     integralImage = violajones.calculateIntegralImage(image)
     
-    violajones.computeHaarFeatures(integralImage, features)
+    violajones.computeHaarFeatures(integralImage, features, gray_image)
+    
+    #derivative(gray_image)
     
     displayImage(imageWithFeatures)
     
