@@ -41,10 +41,11 @@ def displayImage(image):
     
 # Main function that imports image and selects features from image
 def main():
-    image = cv2.imread("yieldsigns/yield.jfif") 
+    #image = cv2.imread("yieldsigns/yield.jfif") 
     #image = cv2.imread("stopsigns/stopsign.jfif") 
     #image = cv2.imread("stopsigns/stopsign3.jpg") 
     #image = cv2.imread("yieldsigns/yield3.jpg") 
+    image = cv2.imread("speedsigns/speed.png") 
     image = cv2.resize(image, (400, 400))
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     #print(gray_image)
