@@ -34,6 +34,15 @@ def canny_edge_detection(frame):
       
     return blurred, edges
 
+def showFeaturesInBlack(image, features):
+    for i in features:
+        x,y = i
+        print(i)
+        image[x, y] = [0, 0, 0]
+        cv2.imshow('Colored Image', image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
 # Function to display image in UI
 def displayImage(image):
     cv2.imshow('haris_corner', image) 
@@ -42,20 +51,28 @@ def displayImage(image):
 # Main function that imports image and selects features from image
 def main():
     #image = cv2.imread("yieldsigns/yield.jfif") 
-    #image = cv2.imread("stopsigns/stopsign.jfif") 
-    #image = cv2.imread("stopsigns/stopsign3.jpg") 
     #image = cv2.imread("yieldsigns/yield3.jpg") 
-    image = cv2.imread("speedsigns/speed.png") 
+    image = cv2.imread("stopsigns/stopsign.jfif") 
+    #image = cv2.imread("stopsigns/stopsign3.jpg") 
+    #image = cv2.imread("speedsigns/speed.png") 
+    #image = cv2.imread("signs/stop&yield.jpg") 
     image = cv2.resize(image, (400, 400))
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     #print(gray_image)
     #displayImage(gray_image)
     
     imageWithFeatures, features = featureselector.selectFeaturesFromImage(image)
+    #displayImage(imageWithFeatures)
+        
     #print(features)
     integralImage = violajones.calculateIntegralImage(image)
     
-    violajones.computeHaarFeatures(integralImage, features, gray_image)
+    ababoostfeatures = violajones.computeHaarFeatures(integralImage, features, gray_image)
+    print(ababoostfeatures)
+    
+    print('Min: ', ababoostfeatures.min())
+    print('Max: ', ababoostfeatures.max())
+    print('Mean: ', ababoostfeatures.mean())
     
     #derivative(gray_image)
     

@@ -3,6 +3,7 @@
 
 import cv2
 import numpy as np
+import pandas as pd
 
 # This is for testing purposes
 def printImageWithIndex(image):
@@ -22,6 +23,7 @@ def calculateIntegralImage(image):
 
 # This function loops through all the features of the image and finds the Haar Features
 # For this project, only the rectangular Haar Featurs will be detected instead of tilted.
+# Returns a DataFrame containing all 4 Haar Feature and sum calculations
 # https://en.wikipedia.org/wiki/Haar-like_feature
 # https://www.youtube.com/watch?v=ZSqg-fZJ9tQ&ab_channel=FirstPrinciplesofComputerVision
 # https://www.youtube.com/watch?v=p9vq90NYHMs&ab_channel=YoussefShakrina
@@ -31,16 +33,15 @@ def computeHaarFeatures(integralImage, features, image):
     #print('First Half: ', first_half)
     #print('Second Half: ', second_half)
     #print(second_half[-1, -1] - first_half[-1, -1])
-    arr = []
+    df = pd.DataFrame(columns=['Aba Boost 1', 'Aba Boost 2', 'Aba Boost 3', 'Aba Boost 4', 'Total'])
     for i in features:
-        meanAdaBoost1 = 0
+        arr2 = []
         #print(i)
         x = i[0]
         y = i[1]
         #print('X: ', x, ', Y: ', y)
-        mean = 0
         try:
-            h = 20 # Since the program will be testing the Haar features on four different sizes.
+            h = 30 # Since the program will be testing the Haar features on four different sizes.
             totalPixels = totalPixelsOfFeature(integralImage, x, y, h) # This first part computes the first AdaBoost training, which consists of up-down edge detection.
             top1, bottom1 = adaBoostTraining1(integralImage, x, y, h, totalPixels)
             left1, right1 = adaBoostTraining2(integralImage, x, y, h, totalPixels)
@@ -55,16 +56,18 @@ def computeHaarFeatures(integralImage, features, image):
             print('Aba Boost 3: ', adaBoost3Value)    
             print('Aba Boost 4: ', adaBoost4Value) 
             
-            total = adaBoost1Value + adaBoost2Value + adaBoost3Value + adaBoost4Value
+            total = (adaBoost1Value + adaBoost2Value + adaBoost3Value + adaBoost4Value)
             print('Total of all Ada Training: ', total)
             #meanAdaBoost1 += totalPixels
             cv2.imshow('haris_corner', image[x-h:x+h,y-h:y+h]) 
             cv2.waitKey() 
+            new_row = {'Aba Boost 1': adaBoost1Value, 'Aba Boost 2': adaBoost2Value, 'Aba Boost 3': adaBoost3Value, 'Aba Boost 4': adaBoost4Value, 'Total': total}
+            
+            df.loc[len(df.index)] = new_row
         except Exception as e:
-            print('Error')
-        mean = mean / 4
-        print('Mean: ', mean)
+            print('Error: ', e)
         #print('Mean: ', meanAdaBoost1)
+    return df
         
 # This computes the total pixels around a specific feature.
 # This takes in the Integral Image, the x and y coordinate of the feature, and h, how big the area should be.
@@ -86,20 +89,28 @@ def totalPixelsOfFeature(integralImage, x, y, h):
     #midpoint = arr.shape[0] // 2
     #print('Midpoint: ', midpoint)
 
-# This computes the x-derivative edge detection, this is used to subtract the top from the bottom, as followed for Haar Features.
+# This computes the x-derivative (up-down) edge detection, this is used to subtract the top from the bottom, as followed for Haar Features.
 # Returns the total pixels of the top half and the total pixels of the bottom half.
 def adaBoostTraining1(integralImage, x, y, h, totalPixels):
-    t1 = integralImage[x][y+h]
-    t2 = integralImage[x][y-(h+1)]
+    t1 = integralImage[x-1][y+h]
+    t2 = integralImage[x-1][y-(h+1)]
     t3 = integralImage[x-(h+1)][y+h]
     a1 = integralImage[x-(h+1)][y-(h+1)]
+    
+    b1 = integralImage[x+h][y+h]
+    b2 = integralImage[x+h][y-(h+1)]
+    b3 = t1
+    a2 = t2
+    aBottom = int(b1) - int(b2) - int(b3) + int(a2)
     #print('T2: ', t2)
 
     # Gets total pixels of the first half
-    aTop = int(t1) - int(t2) - int(t3) + int(a1)
+    #aTop = int(t1) - int(t2) - int(t3) + int(a1)
+    
+    aTop = totalPixels - aBottom
 
     # Gets total pixels of the second half
-    aBottom = totalPixels - aTop
+    #aBottom = totalPixels - aTop
     print('Ada Test 1: Total Pixels: ', totalPixels, ', A Top: ', aTop, ', A Bottom: ', aBottom)
     return aTop, aBottom
 
