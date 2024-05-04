@@ -1,0 +1,98 @@
+import violajones
+import featureselector
+import cv2
+import numpy as np
+import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
+
+train = None
+signs = None
+oneCount = 0
+twoCount = 0
+
+def cosineSimilarity(row):
+    global oneCount
+    global twoCount
+    rowNP = np.array(row).reshape(1, -1)
+    trainNP = np.array(train)
+    cosSimArr = cosine_similarity(rowNP, trainNP)
+    index = np.argmax(cosSimArr)
+    sign = signs.iloc[index]
+    if (cosSimArr[0][index] >= 0.95):
+        print('Sign: ', sign['Signs'], ', Cosine Sim: ', cosSimArr[0][index])
+        if (sign['Signs'] == 1):
+            oneCount += 1
+        else:
+            twoCount+=1
+    #print(cosSimArr.shape)
+
+def trainSigns():
+    global train
+    global signs
+    #image = cv2.imread("yieldsigns/yield.jfif") 
+    #image = cv2.imread("yieldsigns/yield3.jpg") 
+    #image = cv2.imread("stopsigns/stopsign.jfif") 
+    #image = cv2.imread("stopsigns/stopsign3.jpg") 
+    #image = cv2.imread("speedsigns/speed.png") 
+    #image = cv2.imread("signs/stop&yield.jpg") 
+    image = cv2.imread("signs/yield.png") 
+    image = cv2.resize(image, (400, 400))
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    #print(gray_image)
+    #displayImage(gray_image)
+    imageWithFeatures, features = featureselector.selectFeaturesFromImage(image)
+    integralImage = violajones.calculateIntegralImage(image)
+    
+    ababoostfeatures1 = violajones.computeHaarFeatures(integralImage, features, gray_image)
+    print('Stop Sign')
+    print(ababoostfeatures1)
+    print('Stop Sign Size: ', len(ababoostfeatures1))
+    df1 = pd.DataFrame({'Signs': [1] * len(ababoostfeatures1)})
+    
+    image = cv2.imread("signs/stopsign.png") 
+    image = cv2.resize(image, (400, 400))
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    #print(gray_image)
+    #displayImage(gray_image)
+    imageWithFeatures, features = featureselector.selectFeaturesFromImage(image)
+    integralImage = violajones.calculateIntegralImage(image)
+    
+    ababoostfeatures2 = violajones.computeHaarFeatures(integralImage, features, gray_image)
+    print('Yield Sign')
+    print(ababoostfeatures2)
+    print('Yield Sign Size: ', len(ababoostfeatures2))
+    df2 = pd.DataFrame({'Signs': [2] * len(ababoostfeatures2)})
+    
+    train = pd.concat([ababoostfeatures1, ababoostfeatures2], ignore_index=True)
+    signs = pd.concat([df1, df2], ignore_index=True)
+    print('Train: ')
+    print(train)
+    
+    #image = cv2.imread("signs/stopsign.png") 
+    #image = cv2.imread("yieldsigns/yield3.jpg") 
+    #image = cv2.imread("signs/stop&yield.jpg") 
+    image = cv2.imread("stopsigns/stopsign3.jpg") 
+    
+    image = cv2.resize(image, (400, 400))
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    #print(gray_image)
+    #displayImage(gray_image)
+    imageWithFeatures, features = featureselector.selectFeaturesFromImage(image)
+    integralImage = violajones.calculateIntegralImage(image)
+    
+    test = violajones.computeHaarFeatures(integralImage, features, gray_image)
+    print('Test: ')
+    print(test)    
+    
+    df1 = pd.DataFrame({'Signs': [1] * len(ababoostfeatures1)})
+
+    # Print the DataFrame
+    print(signs)
+    
+    closest = test.apply(cosineSimilarity, axis=1)
+    
+    print('Yield Count: ', oneCount)
+    print('Stop Count: ', twoCount)
+ 
+    
+trainSigns()

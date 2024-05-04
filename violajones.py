@@ -33,7 +33,7 @@ def computeHaarFeatures(integralImage, features, image):
     #print('First Half: ', first_half)
     #print('Second Half: ', second_half)
     #print(second_half[-1, -1] - first_half[-1, -1])
-    df = pd.DataFrame(columns=['Aba Boost 1', 'Aba Boost 2', 'Aba Boost 3', 'Aba Boost 4', 'Total'])
+    df = pd.DataFrame(columns=['Aba Boost 1', 'Aba Boost 2', 'Aba Boost 3', 'Aba Boost 4'])
     for i in features:
         arr2 = []
         #print(i)
@@ -51,21 +51,22 @@ def computeHaarFeatures(integralImage, features, image):
             adaBoost2Value = left1-right1
             adaBoost3Value = (left + right) - middle
             adaBoost4Value = (leftup + rightdown) - (rightup + leftdown)
-            print('Aba Boost 1: ', adaBoost1Value)
-            print('Aba Boost 2: ', adaBoost2Value)
-            print('Aba Boost 3: ', adaBoost3Value)    
-            print('Aba Boost 4: ', adaBoost4Value) 
+            #print('Aba Boost 1: ', adaBoost1Value)
+            #print('Aba Boost 2: ', adaBoost2Value)
+            #print('Aba Boost 3: ', adaBoost3Value)    
+            #print('Aba Boost 4: ', adaBoost4Value) 
             
-            total = (adaBoost1Value + adaBoost2Value + adaBoost3Value + adaBoost4Value)
-            print('Total of all Ada Training: ', total)
+            #total = (adaBoost1Value + adaBoost2Value + adaBoost3Value + adaBoost4Value)
+            #print('Total of all Ada Training: ', total)
             #meanAdaBoost1 += totalPixels
-            cv2.imshow('haris_corner', image[x-h:x+h,y-h:y+h]) 
-            cv2.waitKey() 
-            new_row = {'Aba Boost 1': adaBoost1Value, 'Aba Boost 2': adaBoost2Value, 'Aba Boost 3': adaBoost3Value, 'Aba Boost 4': adaBoost4Value, 'Total': total}
+            #cv2.imshow('haris_corner', image[x-h:x+h,y-h:y+h]) 
+            #cv2.waitKey() 
+            new_row = {'Aba Boost 1': adaBoost1Value, 'Aba Boost 2': adaBoost2Value, 'Aba Boost 3': adaBoost3Value, 'Aba Boost 4': adaBoost4Value}
             
             df.loc[len(df.index)] = new_row
         except Exception as e:
-            print('Error: ', e)
+            #print('Error: ', e)
+            continue
         #print('Mean: ', meanAdaBoost1)
     return df
         
@@ -111,7 +112,7 @@ def adaBoostTraining1(integralImage, x, y, h, totalPixels):
 
     # Gets total pixels of the second half
     #aBottom = totalPixels - aTop
-    print('Ada Test 1: Total Pixels: ', totalPixels, ', A Top: ', aTop, ', A Bottom: ', aBottom)
+    #print('Ada Test 1: Total Pixels: ', totalPixels, ', A Top: ', aTop, ', A Bottom: ', aBottom)
     return aTop, aBottom
 
 # This computes the y-derivative edge detection, this is used to subtract the left from the right, as followed for Haar Features.
@@ -133,7 +134,7 @@ def adaBoostTraining2(integralImage, x, y, h, totalPixels):
     left = int(left1) - int(left2) - int(left3) + int(leftadd)
     right = totalPixels - left
 
-    print('Ada Test 2: Total Pixels: ', totalPixels, ', A Left: ', left, ', A Right: ', right)
+    #print('Ada Test 2: Total Pixels: ', totalPixels, ', A Left: ', left, ', A Right: ', right)
     return left, right
 
 # This computes the x-axis-derivative line detection.
@@ -165,7 +166,7 @@ def adaBoostTraining3(integralImage, x, y, h, totalPixels):
     
     right = totalPixels - middle - left
     
-    print('Ada Test 3: Left: ', left, ', Middle: ', middle, ', Right: ', right)
+    #print('Ada Test 3: Left: ', left, ', Middle: ', middle, ', Right: ', right)
     return left, middle, right
 
 
@@ -197,5 +198,5 @@ def adaBoostTraining4(integralImage, x, y, h, totalPixels):
     rightdownadd = leftup1
     rightdown = int(rightdown1) - int(rightdown2) - int(rightdown3) + int(rightdownadd)
     
-    print('Ada Test 4: Left Up: ', leftup, ', Right Up: ', rightup, ', Left Down: ', leftdown, ', Right Down: ', rightdown)
+    #print('Ada Test 4: Left Up: ', leftup, ', Right Up: ', rightup, ', Left Down: ', leftdown, ', Right Down: ', rightdown)
     return leftup, rightup, leftdown, rightdown

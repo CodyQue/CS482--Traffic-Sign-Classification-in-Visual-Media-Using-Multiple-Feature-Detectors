@@ -11,7 +11,7 @@ def selectFeaturesFromImage(image):
     #print(gray_image)
     gray_image = np.float32(gray_image) 
 
-    dst = cv2.cornerHarris(gray_image, blockSize=2, ksize=5, k=0.04) 
+    dst = cv2.cornerHarris(gray_image, blockSize=2, ksize=5, k=0.01) 
     
     feature_coords = np.argwhere(dst > 0.01 * dst.max())
 
