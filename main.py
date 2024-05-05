@@ -2,46 +2,40 @@ import violajones
 import featureselector
 import cv2
 import numpy as np
+import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
 
-def derivative(image):
-    # Read the image
+testFeatureIndex = 0
+testClassification = None # Size = Number of unique signs
+signNames = ['No Turn On Red', 'No U-Turn']
 
-    # Apply Sobel filter for x-direction derivative
-    sobel_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+def cosineSimilarity(row):
+    global testClassification
+    global testFeatureIndex
+    
+    #print(testClassification)
+    # Opens the train.csv and trainClassifier.csv files (obtained from the trainSigns.py program)
+    train = pd.read_csv('train.csv')
+    signs = pd.read_csv('trainClassifier.csv')
 
-    # Apply Sobel filter for y-direction derivative
-    sobel_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
+    #print(uniqueSigns)
+    
+    # Converts DataFrames into NumPy arrays.
+    rowNP = np.array(row).reshape(1, -1)
+    trainNP = np.array(train)
+    
+    #print(trainNP)
+    cosSimArr = cosine_similarity(rowNP, trainNP)
+    
+    if (cosSimArr[0][np.argmax(cosSimArr)] >= 0.97):
+        indexOrder = np.argsort(cosSimArr)
+        indexOrder = indexOrder[0][::-1]
+        index = indexOrder[0]
+        index2 = (signs.iloc[index]['Signs'])-1
+        #print(index2)
+        testClassification[index2] += 1
+        testFeatureIndex += 1
 
-    # Convert back to uint8
-    sobel_x = cv2.convertScaleAbs(sobel_x)
-    sobel_y = cv2.convertScaleAbs(sobel_y)
-
-    # Display the results
-    cv2.imshow('Sobel X', sobel_x)
-    cv2.imshow('Sobel Y', sobel_y)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-def canny_edge_detection(frame): 
-    # Convert the frame to grayscale for edge detection 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 
-      
-    # Apply Gaussian blur to reduce noise and smoothen edges 
-    blurred = cv2.GaussianBlur(src=gray, ksize=(3, 5), sigmaX=0.5) 
-      
-    # Perform Canny edge detection 
-    edges = cv2.Canny(blurred, 70, 135) 
-      
-    return blurred, edges
-
-def showFeaturesInBlack(image, features):
-    for i in features:
-        x,y = i
-        print(i)
-        image[x, y] = [0, 0, 0]
-    cv2.imshow('Colored Image', image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
 
 # Function to display image in UI
 def displayImage(image):
@@ -50,6 +44,7 @@ def displayImage(image):
     
 # Main function that imports image and selects features from image
 def main():
+    global testClassification
     #image = cv2.imread("yieldsigns/yield.jfif") 
     #image = cv2.imread("yieldsigns/yield3.jpg") 
     #image = cv2.imread("stopsigns/stopsign.jfif") 
@@ -57,9 +52,10 @@ def main():
     #image = cv2.imread("speedsigns/speed.png") 
     #image = cv2.imread("signs/stop&yield.jpg") 
     image = cv2.imread("signs/yield.png") 
-    #image = cv2.imread("signs/stopsign3.png") 
-    image = cv2.imread("yieldsigns/yield3.jpg") 
-    image = cv2.imread("signs/noturnonred2.png") 
+    image = cv2.imread("signs/stopsign3.png") 
+    #image = cv2.imread("yieldsigns/yield3.jpg") 
+    #image = cv2.imread("signs/noturnonred2.png") 
+    image = cv2.imread("signs/stop&yield.jpg") 
     
     image = cv2.resize(image, (400, 400))
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -68,12 +64,19 @@ def main():
     
     imageWithFeatures, features = featureselector.selectFeaturesFromImage(image)
     #displayImage(imageWithFeatures)
-        
-    print(features)
+    
+    # Gets array of signs for classifier count
+    signs = pd.read_csv('trainClassifier.csv')
+    uniqueSigns = signs['Signs'].unique()
+    testClassification = np.zeros(uniqueSigns.shape[0])
+    #print(features)
+    
+    # Calculates integral image
     integralImage = violajones.calculateIntegralImage(image)
     
     ababoostfeatures = violajones.computeHaarFeatures(integralImage, features, gray_image)
-    print(ababoostfeatures)
+    ababoostfeatures.apply(cosineSimilarity, axis=1)
+    #print(ababoostfeatures)
     
     #print('Min: ', ababoostfeatures.min())
     #print('Max: ', ababoostfeatures.max())
