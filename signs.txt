@@ -1,5 +1,4 @@
-noturnonred 1
-noturnonred2 1
-nouturn2 2
-nouturn3 2
-nouturn6 2
+noturnonred3 1
+speed 3
+speed2 3
+speed3 3

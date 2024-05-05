@@ -8,16 +8,10 @@ import featureselector
 # each feature, and the classification DataFrame.
 def trainSigns(size = 400):
     
-    trainRed = pd.DataFrame(columns=['Aba Boost 1', 'Aba Boost 2', 'Aba Boost 3', 'Aba Boost 4'])
-    signsRed = pd.DataFrame(columns=['Signs'])
-    
-    trainYellow = pd.DataFrame(columns=['Aba Boost 1', 'Aba Boost 2', 'Aba Boost 3', 'Aba Boost 4'])
-    signsYellow = pd.DataFrame(columns=['Signs'])
-    
     train = pd.DataFrame(columns=['Aba Boost 1', 'Aba Boost 2', 'Aba Boost 3', 'Aba Boost 4'])
     signs = pd.DataFrame(columns=['Signs'])
     
-    with open("signs.txt", "r") as file:
+    with open("redsigns.txt", "r") as file:
         for i in file:
             fileNameArr = i.rstrip().split(" ")
             #print(fileNameArr)
@@ -49,49 +43,24 @@ def trainSigns(size = 400):
                         determine = cv2.pointPolygonTest(contour, tuplePoint, measureDist=False)
                         if (determine >= 0):
                             featuresInSigns.append(f)
-                            #cv2.circle(image, (y, x), point_size, (255, 0, 0), -1)
-                           
-                    # Determines the color of the sign. 
-                    mask = np.zeros_like(image)
-                    cv2.drawContours(mask, [contour], -1, (255, 255, 255), thickness=cv2.FILLED)
-                    shape_colors = cv2.bitwise_and(image, mask)
-                    color_list = shape_colors.reshape(-1, 3)
-                    unique_colors = np.unique(color_list, axis=0)
-                    
-                    yellow_present = False
-                    red_present = False
-                    
-                    for color in unique_colors:
-                        # Checks if the color is yellow
-                        if color[2] > 150 and color[1] > 150 and color[0] < 100 and yellow_present == False:
-                            print('There is yellow')
-                            yellow_present = True
+                            cv2.circle(image, (y, x), point_size, (255, 0, 0), -1)
             
                     ababoostfeatures = violajones.computeHaarFeatures(integralImage, featuresInSigns, gray_image)
                     
-                    #Obtains the sign classifiers from the .txt file
-                    count = int(fileNameArr[1])
-                    df = pd.DataFrame({'Signs': [int(count)] * len(ababoostfeatures)})
-                        
-                    if yellow_present == True:
-                        trainYellow = pd.concat([train, ababoostfeatures], ignore_index=True)
-                        signsYellow = pd.concat([signs, df], ignore_index=True)    
-                    if (red_present == False) and (yellow_present == False):
-                        print('ELSE: ', fileNameArr[0])
-                        train = pd.concat([train, ababoostfeatures], ignore_index=True)
-                        signs = pd.concat([signs, df], ignore_index=True)
+                    train = pd.concat([train, ababoostfeatures], ignore_index=True)
                     #print(signName)
                     #print(ababoostfeatures)
-
+                
+                    count = int(fileNameArr[1])
+                
+                    df = pd.DataFrame({'Signs': [int(count)] * len(ababoostfeatures)})
+                    signs = pd.concat([signs, df], ignore_index=True)
                     #cv2.imshow("Shapes Detected", image)
                     #cv2.waitKey(0)
                     #cv2.destroyAllWindows()
                     #print(signs)
-                    
-        train.to_csv('train.csv', index=False)
-        signs.to_csv('trainClassifier.csv', index=False)       
-        trainYellow.to_csv('trainYellow.csv', index=False)
-        signsYellow.to_csv('trainClassifierYellow.csv', index=False)
+        train.to_csv('trainRed.csv', index=False)
+        signs.to_csv('trainClassifierRed.csv', index=False)
     
 trainSigns()
-print('Done With Training And Classifying Signs. Check directory for .csv files.')
+print('Done With Training And Classifying Red Signs. Check directory for .csv files.')

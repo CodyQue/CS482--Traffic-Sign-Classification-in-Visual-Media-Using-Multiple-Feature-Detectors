@@ -130,9 +130,9 @@ def main():
     #image = cv2.imread("signs/noturnonred.png") 
     #image = cv2.imread("signs/yield3.png") 
     #image = cv2.imread("signs/stopsign5.png")
-    image = cv2.imread("signs/stopsign6.png")
+    #image = cv2.imread("signs/stopsign6.png")
     #image = cv2.imread("signs/yield4.png") 
-    #image = cv2.imread("signs/nouturn6.png") 
+    image = cv2.imread("signs/nouturn6.png") 
     #image = cv2.imread("signs/noturnonred3.png") 
     
     image = cv2.resize(image, (800, 800))
