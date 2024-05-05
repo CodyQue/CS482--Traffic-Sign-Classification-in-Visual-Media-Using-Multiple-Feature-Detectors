@@ -35,8 +35,6 @@ def computeHaarFeatures(integralImage, features, image):
     #print(second_half[-1, -1] - first_half[-1, -1])
     df = pd.DataFrame(columns=['Aba Boost 1', 'Aba Boost 2', 'Aba Boost 3', 'Aba Boost 4'])
     for i in features:
-        arr2 = []
-        #print(i)
         x = i[0]
         y = i[1]
         #print('X: ', x, ', Y: ', y)

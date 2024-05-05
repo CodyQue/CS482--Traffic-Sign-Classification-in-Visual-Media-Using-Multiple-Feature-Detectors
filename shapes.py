@@ -13,33 +13,27 @@ gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 # Apply GaussianBlur to remove noise
 blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
-# Apply Canny edge detection
 edges = cv2.Canny(blurred, 50, 150)
 
-# Find contours
 contours, _ = cv2.findContours(edges.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 largest_contour = None
 largest_area = -1
 shape = None
 
-# Loop over contours
 for contour in contours:
     area = cv2.contourArea(contour)
     
     if area > 10000:
         print('Area: ', area)
-        largest_contour = contour
-        largest_area = area
-        # Approximate the contour
+        
         epsilon = 0.03 * cv2.arcLength(contour, True)
         approx = cv2.approxPolyDP(contour, epsilon, True)
-        
-        # Determine shape based on number of vertices
+
         num_vertices = len(approx)
         shape = "unknown"
         if num_vertices == 3:
-            shape = "triangle"
+            shape = "Yield"
         elif num_vertices == 4:
             # Check if it's a square or rectangle
             x, y, w, h = cv2.boundingRect(approx)
@@ -54,6 +48,15 @@ for contour in contours:
             # Draw contours and shape name
         cv2.drawContours(image, [approx], -1, (0, 255, 0), 2)
         cv2.putText(image, shape, (approx.ravel()[0], approx.ravel()[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+
+point = (42, 28)
+point_position = cv2.pointPolygonTest(largest_contour, point, measureDist=False)
+if point_position > 0:
+    print("Point is inside the shape")
+elif point_position < 0:
+    print("Point is outside the shape")
+else:
+    print("Point is on the contour")
 
 #cv2.drawContours(image, [largest_contour], -1, (0, 255, 0), 2)
 #cv2.putText(image, shape, (largest_contour.ravel()[0], largest_contour.ravel()[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
