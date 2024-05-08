@@ -1,4 +1,4 @@
-# Traffic Sign Classifier
+# Traffic Sign Classifier Using The Viola-Jones Algorithm
 By Cody Querubin, Misha Burnayev, Alexander Walker
 
 ## Problem/Motivation
