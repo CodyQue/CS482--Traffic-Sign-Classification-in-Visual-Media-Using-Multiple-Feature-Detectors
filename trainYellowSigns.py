@@ -11,7 +11,7 @@ def trainSigns(size = 400):
     train = pd.DataFrame(columns=['Aba Boost 1', 'Aba Boost 2', 'Aba Boost 3', 'Aba Boost 4'])
     signs = pd.DataFrame(columns=['Signs'])
     
-    with open("signs.txt", "r") as file:
+    with open("yellowsigns.txt", "r") as file:
         for i in file:
             fileNameArr = i.rstrip().split(" ")
             #print(fileNameArr)
@@ -52,7 +52,6 @@ def trainSigns(size = 400):
                     #print(ababoostfeatures)
                 
                     count = int(fileNameArr[1])
-                    #print(count)
                 
                     df = pd.DataFrame({'Signs': [int(count)] * len(ababoostfeatures)})
                     signs = pd.concat([signs, df], ignore_index=True)
@@ -60,9 +59,9 @@ def trainSigns(size = 400):
                     #cv2.waitKey(0)
                     #cv2.destroyAllWindows()
                     #print(signs)
-        train.to_csv('train.csv', index=False)
-        signs.to_csv('trainClassifier.csv', index=False)
-
-def trainBlackWhiteSigns():
+        train.to_csv('trainYellow.csv', index=False)
+        signs.to_csv('trainClassifierYellow.csv', index=False)
+    
+def trainYellow():
     trainSigns()
-    print('Done With Training And Classifying Black/White Signs. Check directory for .csv files.')
+    print('Done With Training And Classifying Yellow Signs. Check directory for .csv files.')

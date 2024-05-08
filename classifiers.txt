@@ -1,0 +1,6 @@
+noturnonred 1
+nouturn 2
+speed 3
+windyroads 4
+oneway 5
+donotenter 6

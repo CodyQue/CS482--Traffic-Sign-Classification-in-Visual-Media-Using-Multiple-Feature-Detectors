@@ -43,7 +43,7 @@ def trainSigns(size = 400):
                         determine = cv2.pointPolygonTest(contour, tuplePoint, measureDist=False)
                         if (determine >= 0):
                             featuresInSigns.append(f)
-                            cv2.circle(image, (y, x), point_size, (255, 0, 0), -1)
+                            #cv2.circle(image, (y, x), point_size, (255, 0, 0), -1)
             
                     ababoostfeatures = violajones.computeHaarFeatures(integralImage, featuresInSigns, gray_image)
                     
@@ -62,5 +62,6 @@ def trainSigns(size = 400):
         train.to_csv('trainRed.csv', index=False)
         signs.to_csv('trainClassifierRed.csv', index=False)
     
-trainSigns()
-print('Done With Training And Classifying Red Signs. Check directory for .csv files.')
+def trainRed():
+    trainSigns()
+    print('Done With Training And Classifying Red Signs. Check directory for .csv files.')

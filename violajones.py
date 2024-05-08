@@ -1,5 +1,3 @@
-# https://www.youtube.com/watch?v=uEJ71VlUmMQ&ab_channel=Computerphile
-# Also used ChatGPT to help compute the integral image
 
 import cv2
 import numpy as np
@@ -12,6 +10,7 @@ def printImageWithIndex(image):
         print('Index: ', count, ', ', i)
 
 # This function computes the integral image, which is the sum of all pixels from a specific point. This is necessary for computing the Haar Features since it requires sums of specific features.
+# Also used ChatGPT to help compute the integral image
 def calculateIntegralImage(image):
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     #print('Gray image: ', gray_image)
@@ -27,6 +26,7 @@ def calculateIntegralImage(image):
 # https://en.wikipedia.org/wiki/Haar-like_feature
 # https://www.youtube.com/watch?v=ZSqg-fZJ9tQ&ab_channel=FirstPrinciplesofComputerVision
 # https://www.youtube.com/watch?v=p9vq90NYHMs&ab_channel=YoussefShakrina
+# https://www.youtube.com/watch?v=uEJ71VlUmMQ&ab_channel=Computerphile
 def computeHaarFeatures(integralImage, features, image):
     #print('Length: ', features.shape)
     #rowCount = integralImage.shape[0]

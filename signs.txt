@@ -2,3 +2,8 @@ noturnonred3 1
 speed 3
 speed2 3
 speed3 3
+speed4 3
+oneway 5
+oneway2 5
+oneway3 5
+oneway4 5
