@@ -138,7 +138,7 @@ def gatherFeaturesInShape(image, gray_image, features, integralImage):
                     
                     if red_present == True:
                         # Creates array for classifying test data
-                        print('Test Sign is Red')
+                        #print('Test Sign is Red')
                         signs = pd.read_csv('trainClassifierRed.csv')
                         uniqueSigns = signs['Signs'].unique()
                         testClassification = np.zeros(uniqueSigns.shape[0])
@@ -151,7 +151,7 @@ def gatherFeaturesInShape(image, gray_image, features, integralImage):
                     # This is for the yellow signs. If the sign is yellow, then it predicts based on other yellow signs.
                     elif yellow_present == True:
                         # Creates array for classifying test data
-                        print('Test Sign is Yellow')
+                        #print('Test Sign is Yellow')
                         signs = pd.read_csv('trainClassifierYellow.csv')
                         uniqueSigns = signs['Signs'].unique()
                         testClassification = np.zeros(uniqueSigns.shape[0])
@@ -164,7 +164,7 @@ def gatherFeaturesInShape(image, gray_image, features, integralImage):
                     # This is for signs without the color red or yellow.
                     else:
                         # Creates array for classifying test data
-                        print('White & Black')
+                        #print('White & Black')
                         signs = pd.read_csv('trainClassifier.csv')
                         uniqueSigns = signs['Signs'].unique()
                         testClassification = np.zeros(uniqueSigns.shape[0]) 
@@ -213,7 +213,7 @@ def gatherFeaturesInShape(image, gray_image, features, integralImage):
 # Main function that imports image and selects features from image
 def main(arguments):
     global testClassification
-    folder_path = "roadsigns/"
+    folder_path = "input/"
 
     # Loop through each file in the folder
     for file_name in os.listdir(folder_path):
