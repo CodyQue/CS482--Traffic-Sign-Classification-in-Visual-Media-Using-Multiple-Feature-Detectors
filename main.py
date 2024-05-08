@@ -10,7 +10,7 @@ import os
 testFeatureIndex = 0
 testClassification = None # Size = Number of unique signs
 signNamesRed = ['No Turn On Red', 'No U-Turn', 'Do Not Enter']
-signNamesYellow = ['Speed', 'Windy Roads']
+signNamesYellow = ['Speed Limit', 'Windy Roads']
 signNames = ['No Turn On Red','Speed Limit', 'One Way']
 
 # This is used to classify new images. It takes in a feature, from the inputted image, and performs cosine similarity.
